@@ -1,0 +1,82 @@
+import tkinter as tk
+from tkinter import messagebox
+
+class BankAccountApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Bank Account Manager")
+
+        self.accounts = {}
+
+        # Создание и размещение виджетов
+        self.create_widgets()
+
+    def create_widgets(self):
+        # Метки и поля ввода для добавления счета
+        tk.Label(self.root, text="Account Name:").grid(row=0, column=0, padx=5, pady=5)
+        self.account_name_entry = tk.Entry(self.root)
+        self.account_name_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(self.root, text="Initial Balance:").grid(row=1, column=0, padx=5, pady=5)
+        self.initial_balance_entry = tk.Entry(self.root)
+        self.initial_balance_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        self.add_account_button = tk.Button(self.root, text="Add Account", command=self.add_account)
+        self.add_account_button.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
+
+        # Метки и поля ввода для обновления баланса счета
+        tk.Label(self.root, text="Update Account:").grid(row=3, column=0, padx=5, pady=5)
+        self.update_account_name_entry = tk.Entry(self.root)
+        self.update_account_name_entry.grid(row=3, column=1, padx=5, pady=5)
+
+        tk.Label(self.root, text="New Balance:").grid(row=4, column=0, padx=5, pady=5)
+        self.new_balance_entry = tk.Entry(self.root)
+        self.new_balance_entry.grid(row=4, column=1, padx=5, pady=5)
+
+        self.update_balance_button = tk.Button(self.root, text="Update Balance", command=self.update_balance)
+        self.update_balance_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
+
+        # Кнопка для подсчета общей суммы денег на всех счетах
+        self.total_balance_button = tk.Button(self.root, text="Calculate Total Balance", command=self.calculate_total_balance)
+        self.total_balance_button.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
+
+        # Метка для отображения общей суммы денег
+        self.total_balance_label = tk.Label(self.root, text="")
+        self.total_balance_label.grid(row=7, column=0, columnspan=2, padx=5, pady=5)
+
+    def add_account(self):
+        account_name = self.account_name_entry.get()
+        initial_balance = self.initial_balance_entry.get()
+
+        if account_name and initial_balance:
+            try:
+                initial_balance = float(initial_balance)
+                self.accounts[account_name] = initial_balance
+                messagebox.showinfo("Success", f"Account '{account_name}' added with balance ${initial_balance:.2f}")
+            except ValueError:
+                messagebox.showerror("Error", "Invalid balance amount")
+        else:
+            messagebox.showerror("Error", "Please enter account name and balance")
+
+    def update_balance(self):
+        account_name = self.update_account_name_entry.get()
+        new_balance = self.new_balance_entry.get()
+
+        if account_name in self.accounts:
+            try:
+                new_balance = float(new_balance)
+                self.accounts[account_name] = new_balance
+                messagebox.showinfo("Success", f"Account '{account_name}' updated with new balance ${new_balance:.2f}")
+            except ValueError:
+                messagebox.showerror("Error", "Invalid balance amount")
+        else:
+            messagebox.showerror("Error", f"Account '{account_name}' not found")
+
+    def calculate_total_balance(self):
+        total_balance = sum(self.accounts.values())
+        self.total_balance_label.config(text=f"Total Balance: ${total_balance:.2f}")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = BankAccountApp(root)
+    root.mainloop()
